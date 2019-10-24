@@ -16,22 +16,22 @@ public class User
 		ID = value;
 	}
 
-	private UUID UserGuid;
-	public final UUID getUserGuid()
+	private String UserGuid;
+	public final String getUserGuid()
 	{
 		return UserGuid;
 	}
-	public final void setUserGuid(UUID value)
+	public final void setUserGuid(String value)
 	{
 		UserGuid = value;
 	}
 
-	private UUID EnvironmentGuid;
-	public final UUID getEnvironmentGuid()
+	private String EnvironmentGuid;
+	public final String getEnvironmentGuid()
 	{
 		return EnvironmentGuid;
 	}
-	public final void setEnvironmentGuid(UUID value)
+	public final void setEnvironmentGuid(String value)
 	{
 		EnvironmentGuid = value;
 	}

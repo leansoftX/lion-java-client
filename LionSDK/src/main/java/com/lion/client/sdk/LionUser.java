@@ -55,11 +55,14 @@ public class LionUser
 		Custom = value;
 	} //JToken
 
+	public LionUser()
+	{
+		setCustom(new HashMap<String, String>());//JToken
+	}
 	public LionUser(String key)
 	{
 		setKey(key);
 		setCustom(new HashMap<String, String>());//JToken
-
 	}
 	public static LionUser WithKey(String key)
 	{

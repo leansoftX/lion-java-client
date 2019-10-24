@@ -16,12 +16,12 @@ public class FeatureFlagTargeting
 		ID = value;
 	}
 
-	private UUID FeatureFlagGuid;
-	public final UUID getFeatureFlagGuid()
+	private String FeatureFlagGuid;
+	public final String getFeatureFlagGuid()
 	{
 		return FeatureFlagGuid;
 	}
-	public final void setFeatureFlagGuid(UUID value)
+	public final void setFeatureFlagGuid(String value)
 	{
 		FeatureFlagGuid = value;
 	}
@@ -66,15 +66,12 @@ public class FeatureFlagTargeting
 		ModifyDate = value;
 	}
 
-//C# TO JAVA CONVERTER TODO TASK: There is no preprocessor in Java:
-		///#region Targeting
-
-	private UUID EnvironmentGuid;
-	public final UUID getEnvironmentGuid()
+	private String EnvironmentGuid;
+	public final String getEnvironmentGuid()
 	{
 		return EnvironmentGuid;
 	}
-	public final void setEnvironmentGuid(UUID value)
+	public final void setEnvironmentGuid(String value)
 	{
 		EnvironmentGuid = value;
 	}
@@ -89,22 +86,22 @@ public class FeatureFlagTargeting
 		IsTargeting = value;
 	}
 
-	private UUID DefaultVariation;
-	public final UUID getDefaultVariation()
+	private String DefaultVariation;
+	public final String getDefaultVariation()
 	{
 		return DefaultVariation;
 	}
-	public final void setDefaultVariation(UUID value)
+	public final void setDefaultVariation(String value)
 	{
 		DefaultVariation = value;
 	}
 
-	private UUID TargetingOffVariation;
-	public final UUID getTargetingOffVariation()
+	private String TargetingOffVariation;
+	public final String getTargetingOffVariation()
 	{
 		return TargetingOffVariation;
 	}
-	public final void setTargetingOffVariation(UUID value)
+	public final void setTargetingOffVariation(String value)
 	{
 		TargetingOffVariation = value;
 	}
@@ -158,7 +155,4 @@ public class FeatureFlagTargeting
 	{
 		FeatureFlagSegments = value;
 	}
-
-//C# TO JAVA CONVERTER TODO TASK: There is no preprocessor in Java:
-		///#endregion
 }

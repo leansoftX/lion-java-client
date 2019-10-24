@@ -6,6 +6,7 @@ import com.lion.client.sdk.models.*;
 import org.apache.hc.client5.http.entity.*;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.*;
+import org.apache.hc.core5.util.Args;
 import org.json.*;
 
 import java.io.IOException;
@@ -20,7 +21,8 @@ import jdk.nashorn.internal.parser.JSONParser;
 import sun.net.www.http.*;
 
 import static org.apache.hc.core5.http.ContentType.*;
-
+import org.apache.commons.codec.binary.*;
+import com.google.gson.*;
 public class LionClient
 {
 	private String _sdkKey;
@@ -35,21 +37,27 @@ public class LionClient
 	private CloseableHttpClient _httpClient;
 
 
-	private static final String DefaultAPIUri = "http://lion-test.devcloudx.com/api";
+	private String DefaultAPIUri = "http://lion-test.devcloudx.com/api";
 
 	public LionClient(String sdkKey)
 	{
 		set_sdkKey(sdkKey);
 		_httpClient = HttpClients.createDefault();
-		//_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("SDKKey", get_sdkKey());
+	}
+
+	public LionClient(String sdkKey, String apiUri)
+	{
+		set_sdkKey(sdkKey);
+		if(apiUri.isEmpty()==false)
+			DefaultAPIUri = apiUri;
+		_httpClient = HttpClients.createDefault();
 	}
 
 	public final boolean BoolVariation(String key) throws IOException, ParseException {
 		String flagStatusAPI = String.format("%1$s/FlagStatuses/%2$s", DefaultAPIUri, key);
-		//String result = _httpClient.GetStringAsync(flagStatusAPI).Result;
-
 		final HttpGet httpget = new HttpGet(flagStatusAPI);
-		httpget.addHeader("SDKKey",get_sdkKey());
+		String headerString = "SDKKey "+get_sdkKey();
+		httpget.addHeader("Authorization",headerString);
 		final CloseableHttpResponse response = _httpClient.execute(httpget);
 		int statusCode = response.getCode();
 		HttpEntity entity = response.getEntity();
@@ -66,22 +74,18 @@ public class LionClient
 	 @return
 	*/
 
-	public final boolean BoolVariation(String key, LionUser user)
-	{
+	public final boolean BoolVariation(String key, LionUser user) throws IOException, ParseException {
 		return BoolVariation(key, user, false);
 	}
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public bool BoolVariation(string key, LionUser user, bool defaultValue = false)
-	public final boolean BoolVariation(String key, LionUser user, boolean defaultValue)
-	{
+	public final boolean BoolVariation(String key, LionUser user, boolean defaultValue) throws IOException, ParseException {
 		try
 		{
 			LionUser feedbackUser = new LionUser(user.getKey());
 			//send user request event and save user
 			if (!StringHelper.isNullOrEmpty(user.getKey()))
 			{
-				feedbackUser = SendFlagRequestEvent(key, user);
+				feedbackUser = SendFlagRequestEvent(key, user);//TODO: hashmap convert
 			}
 
 			String requestUrl = String.format("%1$s/Flags/%2$s", DefaultAPIUri, key);
@@ -94,18 +98,29 @@ public class LionClient
 			//var flag = JsonConvert.<FeatureFlagTargeting>DeserializeObject(result);
 
 			final HttpGet httpget = new HttpGet(requestUrl);
-			httpget.addHeader("SDKKey",get_sdkKey());
+			String headerString = "SDKKey "+get_sdkKey();
+			httpget.addHeader("Authorization",headerString);
 			final CloseableHttpResponse response = _httpClient.execute(httpget);
 			int statusCode = response.getCode();
 			HttpEntity entity = response.getEntity();
-			String result = entity != null ? EntityUtils.toString(entity) : "{}";
-			FeatureFlagTargeting flag = JSONHelper.parseObject(result,FeatureFlagTargeting.class);
-			Feature feature = new Feature(flag);
-			return feature.Evaluate(feedbackUser, defaultValue);
+			String result = entity != null ? EntityUtils.toString(entity) : "";
+			if(result.isEmpty()==false) {
+				FeatureFlagTargeting flag = JSONHelper.parseObject(result, FeatureFlagTargeting.class);
+				//Gson gson = new Gson();
+				//FeatureFlagTargeting flag = gson.fromJson(result, FeatureFlagTargeting.class);
+				if(flag!=null) {
+					Feature feature = new Feature(flag);
+					return feature.Evaluate(feedbackUser, defaultValue);
+				}
+				else
+					return defaultValue;
+			}
+			else
+				return defaultValue;
 		}
 		catch (Exception e)
 		{
-			return defaultValue;
+			throw e;
 		}
 	}
 
@@ -125,7 +140,8 @@ public class LionClient
 		//return JsonConvert.<LionUser>DeserializeObject(result);
 
 		final HttpPost post = new HttpPost(userAPI);
-		post.addHeader("SDKKey", get_sdkKey());
+		String headerString = "SDKKey "+get_sdkKey();
+		post.addHeader("Authorization",headerString);
 		String userJson = JSONHelper.toJSON(user);
 		StringEntity jsonEntity = new StringEntity(userJson, APPLICATION_JSON);
 		post.setEntity(jsonEntity);
@@ -133,9 +149,19 @@ public class LionClient
 		try (CloseableHttpResponse response = _httpClient.execute(post)) {
 			int statusCode = response.getCode();
 			entity = response.getEntity();
+			String result = entity != null ? EntityUtils.toString(entity) : "{}";
+			if(statusCode==200) {
+				LionUser resultUser = JSONHelper.parseObject(result, LionUser.class); //JSONHelper无法序列化子对象HashMap
+				//Gson gson = new Gson();//属性名为大写，无法反序列化成对象，需要改属性名首字母为小写
+				//LionUser resultUser = gson.fromJson(result, LionUser.class);
+				return resultUser;
+			}
+			else
+				throw new HttpResponseException(statusCode,result);
 		}
-		String result = entity != null ? EntityUtils.toString(entity) : "{}";
-		LionUser resultUser = JSONHelper.parseObject(result, LionUser.class);
-		return resultUser;
+		catch (Exception ex){
+			throw ex;
+		}
+
 	}
 }

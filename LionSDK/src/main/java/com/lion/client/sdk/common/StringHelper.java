@@ -8,6 +8,16 @@ package com.lion.client.sdk.common;
 //----------------------------------------------------------------------------------------
 public final class StringHelper
 {
+	public static String toLowerCaseFirstOne(String s){
+		if(s.equals("ID"))
+			s =  s.toLowerCase();
+		if(s.indexOf("Guid")>-1)
+			s =  s;
+		if(Character.isLowerCase(s.charAt(0)))
+			return s;
+		else
+			return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+	}
 	//------------------------------------------------------------------------------------
 	//	This method replaces the .NET string method 'Substring' when 'start' is a method
 	//	call or calculated value to ensure that 'start' is obtained just once.

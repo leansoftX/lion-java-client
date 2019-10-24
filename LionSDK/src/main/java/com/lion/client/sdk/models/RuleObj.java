@@ -5,12 +5,12 @@ import java.util.*;
 
 public class RuleObj
 {
-	private UUID RuleGuid;
-	public final UUID getRuleGuid()
+	private String RuleGuid;
+	public final String getRuleGuid()
 	{
 		return RuleGuid;
 	}
-	public final void setRuleGuid(UUID value)
+	public final void setRuleGuid(String value)
 	{
 		RuleGuid = value;
 	}
@@ -25,12 +25,12 @@ public class RuleObj
 		RuleName = value;
 	}
 
-	private UUID VariationGuid;
-	public final UUID getVariationGuid()
+	private String VariationGuid;
+	public final String getVariationGuid()
 	{
 		return VariationGuid;
 	}
-	public final void setVariationGuid(UUID value)
+	public final void setVariationGuid(String value)
 	{
 		VariationGuid = value;
 	}

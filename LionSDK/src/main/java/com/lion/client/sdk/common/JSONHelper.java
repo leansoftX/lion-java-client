@@ -190,26 +190,34 @@ public class JSONHelper {
             Method[] methods = objClazz.getDeclaredMethods();     
             Field[] fields = objClazz.getDeclaredFields();       
             for (Field field : fields) {     
-                try {     
-                    String fieldType = field.getType().getSimpleName();     
+                try {
+                    Class<?> t = field.getType();
+                    String fieldType = t.getSimpleName();
                     String fieldGetName = parseMethodName(field.getName(),"get");     
                     if (!haveMethod(methods, fieldGetName)) {     
                         continue;     
                     }     
                     Method fieldGetMet = objClazz.getMethod(fieldGetName, new Class[] {});     
-                    Object fieldVal = fieldGetMet.invoke(obj, new Object[] {});     
-                    String result = null;     
+                    Object fieldVal = fieldGetMet.invoke(obj, new Object[] {});
+                    js.key(field.getName());
+                    Object result = null;
                     if ("Date".equals(fieldType)) {     
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);     
-                        result = sdf.format((Date)fieldVal);    
-  
-                    } else {     
-                        if (null != fieldVal) {     
-                            result = String.valueOf(fieldVal);     
-                        }     
-                    }     
-                    js.key(field.getName());  
-                    serialize(js, result);    
+                        result = sdf.format((Date)fieldVal);
+                        serialize(js, result);
+                    }
+                    else if(fieldType.equals("HashMap")){
+                        if (null != fieldVal) {
+                            result = fieldVal;
+                        }
+                        serializeMap(js,(HashMap<?,?>)fieldVal);
+                    }
+                    else {
+                        if (null != fieldVal) {
+                            result = String.valueOf(fieldVal);
+                        }
+                        serialize(js, result);
+                    }
                 } catch (Exception e) {     
                     continue;     
                 }     
@@ -593,7 +601,7 @@ public class JSONHelper {
             }  
         }else{  
             try {  
-                obj = clazz.newInstance();  
+                obj = clazz.newInstance();
             }catch (Exception e) {  
                 throw new JSONException("unknown class type: " + clazz);  
             }  
@@ -615,7 +623,7 @@ public class JSONHelper {
             @SuppressWarnings("unchecked")  
             Map<String, Object> valueMap = (Map<String, Object>) obj;  
             while (keyIter.hasNext()) {  
-                key = (String) keyIter.next();  
+                key = StringHelper.toLowerCaseFirstOne((String) keyIter.next());
                 value = jo.get(key);                  
                 valueMap.put(key, value);  
   
@@ -633,7 +641,7 @@ public class JSONHelper {
      * @param jo    json实例 
      */  
     private static void setField(Object obj, Method fieldSetMethod,Field field, JSONObject jo) {  
-        String name = field.getName();  
+        String name = StringHelper.toLowerCaseFirstOne(field.getName());
         Class<?> clazz = field.getType();       
         try {  
             if (isArray(clazz)) { // 数组  
@@ -672,14 +680,23 @@ public class JSONHelper {
                     Object o = parseObject(j, clazz);  
                     setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), o);  
                 }  
-            } else if (isList(clazz)) { // 列表  
+            }
+            /*else if (clazz.getSimpleName().equals("HashMap")) { // 对象
+                JSONObject j = jo.optJSONObject(name);
+                if (!isNull(j)) {
+                    Object o = parseObject(j, clazz);
+                    setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), o);
+                }
+            }*/
+            else if (isList(clazz)) { // 列表
 //              JSONObject j = jo.optJSONObject(name);  
 //              if (!isNull(j)) {  
 //                  Object o = parseObject(j, clazz);  
 //                  f.set(obj, o);  
-//              }  
+//              }
+                throw new Exception("list is unsupport type!");
             } else {  
-                throw new Exception("unknow type!");  
+                throw new Exception(clazz.getSimpleName()+" is unknow type!");
             }  
         } catch (Exception e) {  
             e.printStackTrace();  
@@ -693,8 +710,8 @@ public class JSONHelper {
      * @param jo    json实例 
      */  
     @SuppressWarnings("unused")  
-    private static void setField(Object obj, Field field, JSONObject jo) {  
-        String name = field.getName();  
+    private static void setField(Object obj, Field field, JSONObject jo) {
+        String name = StringHelper.toLowerCaseFirstOne(field.getName());
         Class<?> clazz = field.getType();  
         try {  
             if (isArray(clazz)) { // 数组  
@@ -739,7 +756,7 @@ public class JSONHelper {
                     field.set(obj, o);  
                 }  
             }else {  
-                throw new Exception("unknow type!");  
+                throw new Exception(clazz.getSimpleName()+" is unknow type!");
             }  
         } catch (Exception e) {  
             e.printStackTrace();  
@@ -764,7 +781,7 @@ public class JSONHelper {
      * @return 
      */  
     private static boolean isSingle(Class<?> clazz) {  
-        return isBoolean(clazz) || isNumber(clazz) || isString(clazz);  
+        return isBoolean(clazz) || isNumber(clazz) || isString(clazz);
     }  
   
     /** 
@@ -801,10 +818,10 @@ public class JSONHelper {
     public static boolean isString(Class<?> clazz) {  
         return (clazz != null)  
                 && ((String.class.isAssignableFrom(clazz))  
-                        || (Character.TYPE.isAssignableFrom(clazz)) || (Character.class  
+                        || (Character.TYPE.isAssignableFrom(clazz)) || (Character.class
                         .isAssignableFrom(clazz)));  
-    }  
-  
+    }
+
     /** 
      * 判断是否是对象 
      * @param clazz  

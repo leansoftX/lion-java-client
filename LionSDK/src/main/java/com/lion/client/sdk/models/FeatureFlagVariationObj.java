@@ -5,12 +5,12 @@ import java.util.*;
 
 public class FeatureFlagVariationObj
 {
-	private UUID FeatureFlagVariationGuid;
-	public final UUID getFeatureFlagVariationGuid()
+	private String FeatureFlagVariationGuid;
+	public final String getFeatureFlagVariationGuid()
 	{
 		return FeatureFlagVariationGuid;
 	}
-	public final void setFeatureFlagVariationGuid(UUID value)
+	public final void setFeatureFlagVariationGuid(String value)
 	{
 		FeatureFlagVariationGuid = value;
 	}

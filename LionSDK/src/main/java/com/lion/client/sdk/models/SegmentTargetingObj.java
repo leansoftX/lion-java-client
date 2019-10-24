@@ -16,12 +16,12 @@ public class SegmentTargetingObj
 		ID = value;
 	}
 
-	private UUID SegmentGuid;
-	public final UUID getSegmentGuid()
+	private String SegmentGuid;
+	public final String getSegmentGuid()
 	{
 		return SegmentGuid;
 	}
-	public final void setSegmentGuid(UUID value)
+	public final void setSegmentGuid(String value)
 	{
 		SegmentGuid = value;
 	}
@@ -66,15 +66,12 @@ public class SegmentTargetingObj
 		ModifyDate = value;
 	}
 
-//C# TO JAVA CONVERTER TODO TASK: There is no preprocessor in Java:
-		///#region Targeting
-
-	private UUID EnvironmentGuid;
-	public final UUID getEnvironmentGuid()
+	private String EnvironmentGuid;
+	public final String getEnvironmentGuid()
 	{
 		return EnvironmentGuid;
 	}
-	public final void setEnvironmentGuid(UUID value)
+	public final void setEnvironmentGuid(String value)
 	{
 		EnvironmentGuid = value;
 	}
