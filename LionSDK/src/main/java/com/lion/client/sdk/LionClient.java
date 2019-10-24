@@ -2,27 +2,26 @@ package com.lion.client.sdk;
 
 import com.lion.client.sdk.common.*;
 import com.lion.client.sdk.models.*;
+import java.io.IOException;
 
-import org.apache.hc.client5.http.entity.*;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.*;
-import org.apache.hc.core5.util.Args;
-import org.json.*;
-
-import java.io.IOException;
 import org.apache.hc.client5.http.*;
 import org.apache.hc.client5.http.classic.methods.*;
-import org.apache.hc.client5.http.impl.*;
 import org.apache.hc.client5.http.impl.classic.*;
-import org.apache.hc.core5.http.io.*;
 import org.apache.hc.core5.http.io.entity.*;
-
-import jdk.nashorn.internal.parser.JSONParser;
-import sun.net.www.http.*;
-
 import static org.apache.hc.core5.http.ContentType.*;
-import org.apache.commons.codec.binary.*;
-import com.google.gson.*;
+
+//import org.apache.hc.core5.http.io.*;
+//import org.apache.hc.client5.http.impl.*;
+//import jdk.nashorn.internal.parser.JSONParser;
+//import sun.net.www.http.*;
+//import org.apache.hc.client5.http.entity.*;
+//import org.apache.hc.core5.util.Args;
+//import org.json.*;
+//import org.apache.commons.codec.binary.*;
+//import com.google.gson.*;
+
 public class LionClient
 {
 	private String _sdkKey;
@@ -48,7 +47,7 @@ public class LionClient
 	public LionClient(String sdkKey, String apiUri)
 	{
 		set_sdkKey(sdkKey);
-		if(apiUri.isEmpty()==false)
+		if(!apiUri.isEmpty())
 			DefaultAPIUri = apiUri;
 		_httpClient = HttpClients.createDefault();
 	}
@@ -89,14 +88,6 @@ public class LionClient
 			}
 
 			String requestUrl = String.format("%1$s/Flags/%2$s", DefaultAPIUri, key);
-			//var response = _httpClient.GetAsync(requestUrl);
-			//if (response.Result.StatusCode != HttpStatusCode.OK)
-			//{
-			//	return defaultValue;
-			//}
-			//var result = response.Result.Content.ReadAsStringAsync().Result;
-			//var flag = JsonConvert.<FeatureFlagTargeting>DeserializeObject(result);
-
 			final HttpGet httpget = new HttpGet(requestUrl);
 			String headerString = "SDKKey "+get_sdkKey();
 			httpget.addHeader("Authorization",headerString);
@@ -104,7 +95,7 @@ public class LionClient
 			int statusCode = response.getCode();
 			HttpEntity entity = response.getEntity();
 			String result = entity != null ? EntityUtils.toString(entity) : "";
-			if(result.isEmpty()==false) {
+			if(!result.isEmpty()) {
 				FeatureFlagTargeting flag = JSONHelper.parseObject(result, FeatureFlagTargeting.class);
 				//Gson gson = new Gson();
 				//FeatureFlagTargeting flag = gson.fromJson(result, FeatureFlagTargeting.class);
@@ -126,19 +117,6 @@ public class LionClient
 
 	private LionUser SendFlagRequestEvent(String key, LionUser user) throws IOException, ParseException {
 		String userAPI = String.format("%1$s/User", DefaultAPIUri);
-		//StringContent httpContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-		//var response = _httpClient.PostAsync(userAPI, httpContent);
-		//if (response.Result.StatusCode != HttpStatusCode.OK)
-		//{
-		//	LionUser tempVar = new LionUser(user.getKey());
-		//	tempVar.setName(user.getName());
-		//	tempVar.setEmail(user.getEmail());
-		//	tempVar.setCustom(user.getCustom());
-		//	return tempVar;
-		//}
-		//var result = response.Result.Content.ReadAsStringAsync().Result;
-		//return JsonConvert.<LionUser>DeserializeObject(result);
-
 		final HttpPost post = new HttpPost(userAPI);
 		String headerString = "SDKKey "+get_sdkKey();
 		post.addHeader("Authorization",headerString);
@@ -150,9 +128,9 @@ public class LionClient
 			int statusCode = response.getCode();
 			entity = response.getEntity();
 			String result = entity != null ? EntityUtils.toString(entity) : "{}";
-			if(statusCode==200) {
+			if(statusCode == 200) {
 				LionUser resultUser = JSONHelper.parseObject(result, LionUser.class); //JSONHelper无法序列化子对象HashMap
-				//Gson gson = new Gson();//属性名为大写，无法反序列化成对象，需要改属性名首字母为小写
+				//Gson gson = new Gson();//属性名为大写，Gson无法反序列化成对象，需要改属性名首字母为小写
 				//LionUser resultUser = gson.fromJson(result, LionUser.class);
 				return resultUser;
 			}

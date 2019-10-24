@@ -1,7 +1,5 @@
 package com.lion.client.sdk.models;
 
-import com.lion.client.sdk.*;
-
 public class ConditionObj
 {
 	private AttributeObj UserAttribute;

@@ -1,7 +1,5 @@
 package com.lion.client.sdk.models;
 
-import com.lion.client.sdk.*;
-import java.util.*;
 import java.time.*;
 
 public class User
@@ -66,7 +64,7 @@ public class User
 		Email = value;
 	}
 
-	private LocalDateTime CreateDate = LocalDateTime.MIN;
+	private LocalDateTime CreateDate = null;
 	public final LocalDateTime getCreateDate()
 	{
 		return CreateDate;
@@ -76,7 +74,7 @@ public class User
 		CreateDate = value;
 	}
 
-	private LocalDateTime ModifyDate = LocalDateTime.MIN;
+	private LocalDateTime ModifyDate = null;
 	public final LocalDateTime getModifyDate()
 	{
 		return ModifyDate;

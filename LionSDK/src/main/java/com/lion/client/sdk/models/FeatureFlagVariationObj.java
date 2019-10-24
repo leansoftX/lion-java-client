@@ -1,8 +1,5 @@
 package com.lion.client.sdk.models;
 
-import com.lion.client.sdk.*;
-import java.util.*;
-
 public class FeatureFlagVariationObj
 {
 	private String FeatureFlagVariationGuid;

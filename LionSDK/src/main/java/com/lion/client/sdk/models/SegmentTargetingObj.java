@@ -1,6 +1,5 @@
 package com.lion.client.sdk.models;
 
-import com.lion.client.sdk.*;
 import java.util.*;
 import java.time.*;
 
@@ -46,7 +45,7 @@ public class SegmentTargetingObj
 		Key = value;
 	}
 
-	private LocalDateTime CreateDate = LocalDateTime.MIN;
+	private LocalDateTime CreateDate ;
 	public final LocalDateTime getCreateDate()
 	{
 		return CreateDate;
@@ -56,7 +55,7 @@ public class SegmentTargetingObj
 		CreateDate = value;
 	}
 
-	private LocalDateTime ModifyDate = LocalDateTime.MIN;
+	private LocalDateTime ModifyDate ;
 	public final LocalDateTime getModifyDate()
 	{
 		return ModifyDate;
@@ -115,6 +114,4 @@ public class SegmentTargetingObj
 	{
 		DeleteRules = value;
 	}
-//C# TO JAVA CONVERTER TODO TASK: There is no preprocessor in Java:
-		///#endregion
 }

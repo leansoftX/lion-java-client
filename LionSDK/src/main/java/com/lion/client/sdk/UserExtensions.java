@@ -1,8 +1,6 @@
 package com.lion.client.sdk;
 
-import org.json.*;
-//import Newtonsoft.Json.*;
-//import Newtonsoft.Json.Linq.*;
+import com.lion.client.sdk.common.*;
 import java.util.*;
 
 public final class UserExtensions
@@ -74,7 +72,7 @@ public final class UserExtensions
 			throw new IllegalArgumentException("Attribute Name can not be empty");
 		}
 
-		String jsonArray = "[\""+String.join("\",\"",value)+"\"]";
+		String jsonArray = "[\""+ StringHelper.join("\",\"",value.toArray(new String[value.size()]))+"\"]";
 		user.getCustom().put(attribute,jsonArray );//JArray
 
 		return user;

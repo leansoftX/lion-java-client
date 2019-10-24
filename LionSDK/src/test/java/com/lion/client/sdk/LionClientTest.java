@@ -23,12 +23,16 @@ public class LionClientTest {
     public void tearDown() throws Exception {
     }
 
-    //Default Project
+    //default api url(lion test env api url): http://lion-test.devcloudx.com/api
+    //Project: Default
     //Production Env sdk key: sdk-1a18e3cb-0c43-4120-af29-a7257d6fb624
     //Test Env sdk key: sdk-fd36d100-a98c-42b8-9e2d-af535e06acb2
 
     // Features key: test-fuction1, all user enable
-    // test-fuction2,
+    // Features test-fuction2:
+    // user: lixiaoming@leansoft.com enable
+    // user: lixiaoming-disable@leansoft.com disable
+
     @Test
     public void boolVariation() throws IOException, ParseException {
         LionClient client = new LionClient("sdk-fd36d100-a98c-42b8-9e2d-af535e06acb2");
@@ -48,24 +52,27 @@ public class LionClientTest {
         //map.put("Phone", "123456789");
         //map.put("City", "GuangZhou");
         LionClient client = new LionClient("sdk-fd36d100-a98c-42b8-9e2d-af535e06acb2");//"http://localhost/api"
-        final boolean result = client.BoolVariation("test-fuction2",lionUser);
+        final boolean result = client.BoolVariation("test-fuction2", lionUser);
         assertEquals(result, true);
+    }
 
-        /*
+    @Test
+    public void boolVariation2() throws IOException, ParseException {
         String testUser2 = "lixiaoming-disable@leansoft.com";
         LionUser lionUser2 = new LionUser(testUser2);
         lionUser2.setName(testUser2);
         lionUser2.setEmail(testUser2);
         HashMap<String, String> map2 = lionUser2.getCustom();
         map2.put("Gender", "male");
-        map2.put("Age", "32");
-        map2.put("Phone", "1234567890");
-        map2.put("City", "ShenZheng");
-        */
-
-}
+        //map2.put("Age", "32");
+        //map2.put("Phone", "1234567890");
+        //map2.put("City", "ShenZheng");
+        LionClient client = new LionClient("sdk-fd36d100-a98c-42b8-9e2d-af535e06acb2");//"http://localhost/api"
+        final boolean result = client.BoolVariation("test-fuction2",lionUser2);
+        assertEquals(result, false);
+    }
 
     @Test
-    public void boolVariation2() {
+    public void boolVariation3() {
     }
 }

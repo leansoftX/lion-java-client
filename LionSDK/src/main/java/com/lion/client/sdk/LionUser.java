@@ -1,14 +1,8 @@
 package com.lion.client.sdk;
-
-import org.json.*;
-//import Newtonsoft.Json.*;
-//import Newtonsoft.Json.Linq.*;
 import java.util.*;
 
 public class LionUser
 {
-//C# TO JAVA CONVERTER TODO TASK: Java annotations will not correspond to .NET attributes:
-//ORIGINAL LINE: [JsonProperty(PropertyName = "key", NullValueHandling = NullValueHandling.Ignore)] public string Key {get;set;}
 	private String Key;
 	public final String getKey()
 	{
@@ -19,8 +13,6 @@ public class LionUser
 		Key = value;
 	}
 
-//C# TO JAVA CONVERTER TODO TASK: Java annotations will not correspond to .NET attributes:
-//ORIGINAL LINE: [JsonProperty(PropertyName = "name", NullValueHandling = NullValueHandling.Ignore)] public string Name {get;set;}
 	private String Name;
 	public final String getName()
 	{
@@ -31,8 +23,6 @@ public class LionUser
 		Name = value;
 	}
 
-//C# TO JAVA CONVERTER TODO TASK: Java annotations will not correspond to .NET attributes:
-//ORIGINAL LINE: [JsonProperty(PropertyName = "email", NullValueHandling = NullValueHandling.Ignore)] public string Email {get;set;}
 	private String Email;
 	public final String getEmail()
 	{
@@ -43,8 +33,6 @@ public class LionUser
 		Email = value;
 	}
 
-//C# TO JAVA CONVERTER TODO TASK: Java annotations will not correspond to .NET attributes:
-//ORIGINAL LINE: [JsonProperty(PropertyName = "custom", NullValueHandling = NullValueHandling.Ignore)] public Dictionary<string, JToken> Custom {get;set;}
 	private HashMap<String, String> Custom; //JToken
 	public final HashMap<String, String> getCustom() //JToken
 	{

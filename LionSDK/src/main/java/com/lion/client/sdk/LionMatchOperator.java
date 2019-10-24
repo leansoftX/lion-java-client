@@ -14,7 +14,7 @@ public final class LionMatchOperator
 				result = LessThan(firstValue, secondValue);
 				break;
 			case "equal":
-				result = firstValue==secondValue;
+				result = firstValue.equals(secondValue);
 				break;
 			case "contain":
 				result = Contains(firstValue, secondValue);

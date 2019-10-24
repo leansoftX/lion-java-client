@@ -1,7 +1,6 @@
 package com.lion.client.sdk;
 import java.util.*;
 import com.lion.client.sdk.models.*;
-//import org.apache.calcite.linq4j.*;
 
 public class Feature
 {
@@ -24,7 +23,7 @@ public class Feature
 			List<FeatureFlagVariationObj> featureFlagVariationObjs = _flag.getFeatureFlagVariations();
 			for(FeatureFlagVariationObj item : featureFlagVariationObjs)
 			{
-				if (item.getFeatureFlagVariationGuid() == _flag.getTargetingOffVariation()) {
+				if (item.getFeatureFlagVariationGuid().equals(_flag.getTargetingOffVariation())) {
 					targetingOffVairation = item;
 					break;
 				}
@@ -59,7 +58,7 @@ public class Feature
 
 		for(User item : feature_off_targeting_users)
 		{
-			if (item.getKey() == user.getKey()) {
+			if (item.getKey().equals(user.getKey())) {
 				return false;
 			}
 		}
@@ -79,7 +78,7 @@ public class Feature
 					SegmentTargetingObj segment = null;
 					for(SegmentTargetingObj item : _flag.getFeatureFlagSegments())
 					{
-						if (item.getSegmentGuid().toString() == condition.getExpectValue()) {
+						if (item.getSegmentGuid().equals(condition.getExpectValue())) {
 							segment =  item;
 							break;
 						}
@@ -119,7 +118,7 @@ public class Feature
 					}
 					else
 					{
-						String attributeValue = user.getCustom().get(attributeName).toString();
+						String attributeValue = user.getCustom().get(attributeName);
 						isMatchRule = LionMatchOperator.Match(condition.getOperation(), attributeValue, condition.getExpectValue());
 					}
 				}
@@ -131,7 +130,7 @@ public class Feature
 				FeatureFlagVariationObj matchedVariation = null;
 				for(FeatureFlagVariationObj item : _flag.getFeatureFlagVariations())
 				{
-					if (item.getFeatureFlagVariationGuid() == rule.getVariationGuid()) {
+					if (item.getFeatureFlagVariationGuid().equals(rule.getVariationGuid())) {
 						matchedVariation = item;
 						break;
 					}
@@ -147,7 +146,7 @@ public class Feature
 		FeatureFlagVariationObj defaultVariation = null;
 		for(FeatureFlagVariationObj item : _flag.getFeatureFlagVariations())
 		{
-			if (item.getFeatureFlagVariationGuid() == _flag.getDefaultVariation()) {
+			if (item.getFeatureFlagVariationGuid().equals(_flag.getDefaultVariation())) {
 				defaultVariation = item;
 				break;
 			}
@@ -172,7 +171,7 @@ public class Feature
 		//}
 		for(User item : segment.getIncludeUsers())
 		{
-			if (item.getKey() == user.getKey()) {
+			if (item.getKey().equals(user.getKey())) {
 				return true;
 			}
 		}
@@ -184,7 +183,7 @@ public class Feature
 		//}
 		for(User item : segment.getExcludeUsers())
 		{
-			if (item.getKey() == user.getKey()) {
+			if (item.getKey().equals(user.getKey())) {
 				return true;
 			}
 		}
@@ -220,7 +219,7 @@ public class Feature
 			}
 			else
 			{
-				String attributeValue = user.getCustom().get(attributeName).toString();
+				String attributeValue = user.getCustom().get(attributeName);
 				if (!LionMatchOperator.Match(condition.getOperation(), attributeValue, condition.getExpectValue()))
 				{
 					return false;
