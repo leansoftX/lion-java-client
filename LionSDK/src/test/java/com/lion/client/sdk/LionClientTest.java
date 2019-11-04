@@ -1,6 +1,5 @@
 package com.lion.client.sdk;
 
-import org.apache.hc.core5.http.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,14 +33,14 @@ public class LionClientTest {
     // user: lixiaoming-disable@leansoft.com disable
 
     @Test
-    public void boolVariation() throws IOException, ParseException {
+    public void boolVariation() throws IOException {
         LionClient client = new LionClient("sdk-fd36d100-a98c-42b8-9e2d-af535e06acb2");
         final boolean result = client.BoolVariation("test-fuction1");
         assertEquals(result, true);
     }
 
     @Test
-    public void boolVariation1() throws IOException, ParseException {
+    public void boolVariation1() throws IOException {
         String testUser1 = "lixiaoming@leansoft.com";
         LionUser lionUser = new LionUser(testUser1);
         lionUser.setName(testUser1);
@@ -57,7 +56,7 @@ public class LionClientTest {
     }
 
     @Test
-    public void boolVariation2() throws IOException, ParseException {
+    public void boolVariation2() throws IOException {
         String testUser2 = "lixiaoming-disable@leansoft.com";
         LionUser lionUser2 = new LionUser(testUser2);
         lionUser2.setName(testUser2);

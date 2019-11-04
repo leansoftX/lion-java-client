@@ -19,7 +19,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.hc.core5.http.ParseException;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -158,13 +157,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public boolean GetAllUserEnableFeatureFlag(String apiUrl,String sdkKey) throws IOException, ParseException {
+    public boolean GetAllUserEnableFeatureFlag(String apiUrl,String sdkKey) throws IOException {
         LionClient client = new LionClient(sdkKey,apiUrl);//"sdk-fd36d100-a98c-42b8-9e2d-af535e06acb2"
         final boolean result = client.BoolVariation("test-fuction1");
         return result;
     }
 
-    public boolean GetTestFuction1UserFeatureFlag(String userKey,String apiUrl,String sdkKey) throws IOException, ParseException {
+    public boolean GetTestFuction1UserFeatureFlag(String userKey,String apiUrl,String sdkKey) throws IOException {
         LionUser lionUser = new LionUser(userKey);
         lionUser.setName(userKey);
         lionUser.setEmail(userKey);
