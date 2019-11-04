@@ -2,25 +2,13 @@ package com.lion.client.sdk;
 
 import com.lion.client.sdk.common.*;
 import com.lion.client.sdk.models.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.IOException;
-
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.core5.http.*;
-import org.apache.hc.client5.http.*;
-import org.apache.hc.client5.http.classic.methods.*;
-import org.apache.hc.client5.http.impl.classic.*;
-import org.apache.hc.core5.http.io.entity.*;
-import static org.apache.hc.core5.http.ContentType.*;
-
-//import org.apache.hc.core5.http.io.*;
-//import org.apache.hc.client5.http.impl.*;
-//import jdk.nashorn.internal.parser.JSONParser;
-//import sun.net.www.http.*;
-//import org.apache.hc.client5.http.entity.*;
-//import org.apache.hc.core5.util.Args;
-//import org.json.*;
-//import org.apache.commons.codec.binary.*;
-//import com.google.gson.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class LionClient
 {
@@ -33,15 +21,12 @@ public class LionClient
 	{
 		_sdkKey = value;
 	}
-	private CloseableHttpClient _httpClient;
-
 
 	private String DefaultAPIUri = "http://lion-test.devcloudx.com/api";
 
 	public LionClient(String sdkKey)
 	{
 		set_sdkKey(sdkKey);
-		_httpClient = HttpClients.createDefault();
 	}
 
 	public LionClient(String sdkKey, String apiUri)
@@ -49,18 +34,29 @@ public class LionClient
 		set_sdkKey(sdkKey);
 		if(!apiUri.isEmpty())
 			DefaultAPIUri = apiUri;
-		_httpClient = HttpClients.createDefault();
 	}
 
-	public final boolean BoolVariation(String key) throws IOException, ParseException {
+	public final boolean BoolVariation(String key) throws IOException {
+		String result = "false";
+		StringBuilder stringBuilder = new StringBuilder();
 		String flagStatusAPI = String.format("%1$s/FlagStatuses/%2$s", DefaultAPIUri, key);
-		final HttpGet httpget = new HttpGet(flagStatusAPI);
+		URL url = new URL(flagStatusAPI);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setConnectTimeout(2000);
 		String headerString = "SDKKey "+get_sdkKey();
-		httpget.addHeader("Authorization",headerString);
-		final CloseableHttpResponse response = _httpClient.execute(httpget);
-		int statusCode = response.getCode();
-		HttpEntity entity = response.getEntity();
-		String result = entity != null ? EntityUtils.toString(entity) : "false";
+		conn.setRequestProperty("Authorization", headerString);
+		if (conn.getResponseCode() == 200) {
+			InputStream in = conn.getInputStream();
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in,"UTF-8"));
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				stringBuilder.append(line);
+			}
+			result = stringBuilder.toString();
+			bufferedReader.close();
+			in.close();
+		}
 		return Boolean.parseBoolean(result);
 	}
 
@@ -73,28 +69,39 @@ public class LionClient
 	 @return
 	*/
 
-	public final boolean BoolVariation(String key, LionUser user) throws IOException, ParseException {
+	public final boolean BoolVariation(String key, LionUser user) throws IOException {
 		return BoolVariation(key, user, false);
 	}
 
-	public final boolean BoolVariation(String key, LionUser user, boolean defaultValue) throws IOException, ParseException {
+	public final boolean BoolVariation(String key, LionUser user, boolean defaultValue) throws IOException {
 		try
 		{
+			String result = "";
+			StringBuilder stringBuilder = new StringBuilder();
 			LionUser feedbackUser = new LionUser(user.getKey());
 			//send user request event and save user
 			if (!StringHelper.isNullOrEmpty(user.getKey()))
 			{
 				feedbackUser = SendFlagRequestEvent(key, user);//TODO: hashmap convert
 			}
-
 			String requestUrl = String.format("%1$s/Flags/%2$s", DefaultAPIUri, key);
-			final HttpGet httpget = new HttpGet(requestUrl);
+			URL url = new URL(requestUrl);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setConnectTimeout(2000);
 			String headerString = "SDKKey "+get_sdkKey();
-			httpget.addHeader("Authorization",headerString);
-			final CloseableHttpResponse response = _httpClient.execute(httpget);
-			int statusCode = response.getCode();
-			HttpEntity entity = response.getEntity();
-			String result = entity != null ? EntityUtils.toString(entity) : "";
+			conn.setRequestProperty("Authorization", headerString);
+			if (conn.getResponseCode() == 200) {
+				InputStream in = conn.getInputStream();
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in,"UTF-8"));
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					stringBuilder.append(line);
+				}
+				result = stringBuilder.toString();
+				bufferedReader.close();
+				in.close();
+			}
 			if(!result.isEmpty()) {
 				FeatureFlagTargeting flag = JSONHelper.parseObject(result, FeatureFlagTargeting.class);
 				//Gson gson = new Gson();
@@ -115,31 +122,50 @@ public class LionClient
 		}
 	}
 
-	private LionUser SendFlagRequestEvent(String key, LionUser user) throws IOException, ParseException {
-		String userAPI = String.format("%1$s/User", DefaultAPIUri);
-		final HttpPost post = new HttpPost(userAPI);
-		String headerString = "SDKKey "+get_sdkKey();
-		post.addHeader("Authorization",headerString);
-		String userJson = JSONHelper.toJSON(user);
-		StringEntity jsonEntity = new StringEntity(userJson, APPLICATION_JSON);
-		post.setEntity(jsonEntity);
-		HttpEntity entity;
-		try (CloseableHttpResponse response = _httpClient.execute(post)) {
-			int statusCode = response.getCode();
-			entity = response.getEntity();
-			String result = entity != null ? EntityUtils.toString(entity) : "{}";
-			if(statusCode == 200) {
-				LionUser resultUser = JSONHelper.parseObject(result, LionUser.class); //JSONHelper无法序列化子对象HashMap
-				//Gson gson = new Gson();//属性名为大写，Gson无法反序列化成对象，需要改属性名首字母为小写
-				//LionUser resultUser = gson.fromJson(result, LionUser.class);
-				return resultUser;
+	private LionUser SendFlagRequestEvent(String key, LionUser user) throws IOException {
+		try{
+			String result = "{}";
+			StringBuilder stringBuilder = new StringBuilder();
+			String userAPI = String.format("%1$s/User", DefaultAPIUri);
+			URL url = new URL(userAPI);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(2000);
+			conn.setReadTimeout(2000);
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			conn.setRequestMethod("POST");
+			conn.setUseCaches(false);
+			conn.setRequestProperty("Accept-Charset", "UTF-8");
+			conn.setRequestProperty("Connection", "Keep-Alive");
+			conn.setRequestProperty("Content-Type", "application/json");
+			String headerString = "SDKKey "+get_sdkKey();
+			conn.setRequestProperty("Authorization", headerString);
+			String userJson = JSONHelper.toJSON(user);
+			byte[] jsonBytes = userJson.getBytes();
+			conn.setRequestProperty("Content-Length", String.valueOf(jsonBytes.length));
+			OutputStream outputStream = conn.getOutputStream();
+			outputStream.write(userJson.getBytes());
+			outputStream.flush();
+			outputStream.close();
+			if (conn.getResponseCode() == 200) {
+				InputStream in = conn.getInputStream();
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in,"UTF-8"));
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					stringBuilder.append(line);
+				}
+				result = stringBuilder.toString();
+				bufferedReader.close();
+				in.close();
 			}
-			else
-				throw new HttpResponseException(statusCode,result);
+			LionUser resultUser = JSONHelper.parseObject(result, LionUser.class); //JSONHelper无法序列化子对象HashMap
+			//Gson gson = new Gson();//属性名为大写，Gson无法反序列化成对象，需要改属性名首字母为小写
+			//LionUser resultUser = gson.fromJson(result, LionUser.class);
+			return resultUser;
 		}
-		catch (Exception ex){
-			throw ex;
+		catch (Exception e)
+		{
+			throw e;
 		}
-
 	}
 }
