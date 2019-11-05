@@ -16,7 +16,7 @@ Lion Client SDK for JAVA
 
 3. 在项目中创建LionClient对象
 
-         LionClient client = new LionClient("environment-sdk");
+         LionClient lionClient = new LionClient("environment-sdk");
 
 创建你的第一个功能开关
 -----------------------
@@ -32,11 +32,11 @@ Lion Client SDK for JAVA
 
         HashMap<String, String> customAttribute = user.getCustom();
 
-        customAttribute.put("Age", "31");                       //Optional
+        customAttribute.put("customer-attribute-key1", "customer-attribute-value1");              //Optional
 
-        customAttribute.put("Phone", "123456789");              //Optional
+        customAttribute.put("customer-attribute-key2", "customer-attribute-value2");              //Optional
 
-        customAttribute.put("City", "GuangZhou");               //Optional
+        customAttribute.put("customer-attribute-key3", "customer-attribute-value3");              //Optional
 
         boolean featureStatus = client.BoolVariation("feature-key", user);
 
