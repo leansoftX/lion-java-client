@@ -47,7 +47,7 @@ public class LionClientTest {
         lionUser.setName(testUser1);
         lionUser.setEmail(testUser1);
         HashMap<String, String> map = lionUser.getCustom();
-        map.put("Assets", "10.00");
+        map.put("Assets", "100000.00");
         //map.put("Age", "31");
         //map.put("Phone", "123456789");
         //map.put("City", "GuangZhou");
