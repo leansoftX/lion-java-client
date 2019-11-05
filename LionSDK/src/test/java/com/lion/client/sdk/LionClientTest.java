@@ -39,19 +39,20 @@ public class LionClientTest {
         assertEquals(result, true);
     }
 
+
     @Test
     public void boolVariation1() throws IOException {
-        String testUser1 = "lixiaoming@leansoft.com";
+        String testUser1 = "vincentwei@leansoftx.com";
         LionUser lionUser = new LionUser(testUser1);
         lionUser.setName(testUser1);
         lionUser.setEmail(testUser1);
         HashMap<String, String> map = lionUser.getCustom();
-        map.put("Gender", "male");
+        map.put("Assets", "10.00");
         //map.put("Age", "31");
         //map.put("Phone", "123456789");
         //map.put("City", "GuangZhou");
-        LionClient client = new LionClient("sdk-fd36d100-a98c-42b8-9e2d-af535e06acb2");//"http://localhost/api"
-        final boolean result = client.BoolVariation("test-fuction2", lionUser);
+        LionClient client = new LionClient("sdk-59f7107f-d227-4499-91a7-137a7804bb61");//"http://localhost/api"
+        final boolean result = client.BoolVariation("TestFF", lionUser);
         assertEquals(result, true);
     }
 

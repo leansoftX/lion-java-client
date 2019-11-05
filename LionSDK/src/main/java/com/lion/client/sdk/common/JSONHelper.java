@@ -672,15 +672,15 @@ public class JSONHelper {
             } else if (isSingle(clazz)) { // 值类型  
                 Object o = jo.opt(name);  
                 if (o != null) {  
-                    setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), o);  
-                }  
-            } else if (isObject(clazz)) { // 对象  
-                JSONObject j = jo.optJSONObject(name);  
-                if (!isNull(j)) {  
-                    Object o = parseObject(j, clazz);  
-                    setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), o);  
-                }  
+                    setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), o);
             }
+        } else if (isObject(clazz)) { // 对象
+            JSONObject j = jo.optJSONObject(name);
+            if (!isNull(j)) {
+                Object o = parseObject(j, clazz);
+                setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), o);
+            }
+        }
             /*else if (clazz.getSimpleName().equals("HashMap")) { // 对象
                 JSONObject j = jo.optJSONObject(name);
                 if (!isNull(j)) {
@@ -688,14 +688,24 @@ public class JSONHelper {
                     setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), o);
                 }
             }*/
-            else if (isList(clazz)) { // 列表
-//              JSONObject j = jo.optJSONObject(name);  
-//              if (!isNull(j)) {  
-//                  Object o = parseObject(j, clazz);  
-//                  f.set(obj, o);  
+        else if (isList(clazz)) { // 列表
+//              JSONObject j = jo.optJSONObject(name);
+//              if (!isNull(j)) {
+//                  Object o = parseObject(j, clazz);
+//                  f.set(obj, o);
 //              }
-                throw new Exception("list is unsupport type!");
-            } else {  
+            throw new Exception("list is unsupport type!");
+        }
+        else if(isMap(clazz)){
+            JSONObject j = jo.optJSONObject(name);
+            HashMap<String, String> map = new HashMap<>();
+                for (Iterator<String> it = j.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    map.put(key, j.getString(key));
+                }
+                setFiedlValue(obj, fieldSetMethod, clazz.getSimpleName(), map);
+            }
+            else {
                 throw new Exception(clazz.getSimpleName()+" is unknow type!");
             }  
         } catch (Exception e) {  
