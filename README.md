@@ -16,7 +16,7 @@ Lion Client SDK for JAVA
 
 3. 在项目中创建LionClient对象
 
-         LionClient client = new LionClient("environment-sdk","api-url");
+         LionClient client = new LionClient("environment-sdk");
 
 创建你的第一个功能开关
 -----------------------
